@@ -1,0 +1,26 @@
+<!-- Recuse Protocol mark - "the recused seal"
+     A judge's seal struck through by the recusal line.
+     Designed to read at 16px favicon and 240px hero. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Recuse Protocol">
+  <title>Recuse Protocol</title>
+  <desc>A square seal with a horizontal strike representing judicial recusal.</desc>
+
+  <!-- Outer seal frame -->
+  <rect x="4" y="4" width="56" height="56" fill="none" stroke="#1A1817" stroke-width="2"/>
+
+  <!-- Inner frame, hand-cut feel -->
+  <rect x="9" y="9" width="46" height="46" fill="none" stroke="#1A1817" stroke-width="1"/>
+
+  <!-- Letter R, slab-serif, monospaced -->
+  <text x="32" y="42"
+        font-family="'Newsreader', 'Iowan Old Style', Georgia, serif"
+        font-size="32"
+        font-weight="600"
+        text-anchor="middle"
+        fill="#1A1817"
+        font-style="italic">R</text>
+
+  <!-- The recusal strike: horizontal, rust accent, slightly extended past frame -->
+  <line x1="0" y1="32" x2="64" y2="32"
+        stroke="#B84A2A" stroke-width="3" stroke-linecap="square"/>
+</svg>

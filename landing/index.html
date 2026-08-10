@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recuse Protocol - The Trustless DeFi Verdict Layer</title>
+  <meta name="description" content="When the evidence demands it, the protocol steps aside. A decentralized verdict layer for DeFi token integrity, built on GenLayer Intelligent Contracts." />
+  <link rel="icon" type="image/svg+xml" href="/recuse-mark.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       Recuse Protocol - "The Filing" landing
+       Judicial document aesthetic, distinct from app's Dry Ink system.
+       ============================================================ */
+
+    :root {
+      --paper:       #F2F2EC;
+      --paper-rule:  #14110F;
+      --paper-edge:  #E5E2D8;
+      --ink:         #14110F;
+      --ink-2:       #3A332D;
+      --ink-3:       #8A8580;
+      --stamp:       #B5252E;
+      --stamp-soft:  #C8615B;
+      --indigo:      #1A2747;
+      --green-seal:  #2E4F2A;
+
+      --serif-display: "Crimson Pro", "ITC Charter", Times, serif;
+      --serif-body:    "Source Serif Pro", "Source Serif 4", Times, serif;
+      --mono:          "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif-body);
+      font-size: 17px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle paper texture using overlapping gradients */
+    body {
+      background-image:
+        radial-gradient(at 20% 30%, rgba(20,17,15,0.020) 0, transparent 50%),
+        radial-gradient(at 80% 70%, rgba(20,17,15,0.015) 0, transparent 50%),
+        repeating-linear-gradient(0deg, transparent 0 2px, rgba(20,17,15,0.012) 2px 3px);
+    }
+
+    a {
+      color: var(--ink);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--ink-3);
+    }
+    a:hover { color: var(--stamp); text-decoration-color: var(--stamp); }
+
+    .filing {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 56px 64px 96px;
+      position: relative;
+      background: var(--paper);
+      border-left: 1px solid var(--paper-edge);
+      border-right: 1px solid var(--paper-edge);
+      min-height: 100vh;
+    }
+
+    @media (max-width: 720px) {
+      .filing { padding: 32px 24px 64px; }
+    }
+
+    /* ---------- Filing header (the court caption) ---------- */
+
+    .court-name {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .court-sub {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .caption-bracket {
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      padding: 28px 0 32px;
+      margin: 16px 0 0;
+      position: relative;
+    }
+
+    .docket-line {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 24px;
+    }
+
+    .caption-title {
+      font-family: var(--serif-display);
+      font-weight: 600;
+      font-style: italic;
+      font-size: 3.2rem;
+      line-height: 1.05;
+      text-align: center;
+      letter-spacing: -0.005em;
+      color: var(--ink);
+      margin: 0 0 8px;
+    }
+
+    .caption-vs {
+      text-align: center;
+      font-family: var(--serif-display);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--ink-3);
+      margin: 8px 0 16px;
+      letter-spacing: 0.02em;
+    }
+
+    .caption-sub {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      text-align: center;
+    }
+
+    .filed-stamp {
+      position: absolute;
+      top: 18px;
+      right: -8px;
+      transform: rotate(8deg);
+      border: 2px solid var(--stamp);
+      padding: 6px 14px 4px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      color: var(--stamp);
+      background: var(--paper);
+      opacity: 0.85;
+    }
+    .filed-stamp .stamp-date {
+      display: block;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--stamp);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    /* ---------- Seal (the recused mark) in margin ---------- */
+
+    .seal-block {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      margin: 48px 0;
+      padding: 24px 0;
+    }
+    .seal-block svg { display: block; }
+    .seal-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      max-width: 200px;
+      line-height: 1.5;
+    }
+
+    /* ---------- Section structure ---------- */
+
+    section {
+      margin: 56px 0;
+    }
+
+    .section-num {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--stamp);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: var(--serif-display);
+      font-weight: 500;
+      font-style: italic;
+      font-size: 2rem;
+      line-height: 1.15;
+      margin-bottom: 24px;
+      letter-spacing: -0.005em;
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 12px;
+    }
+
+    .lead {
+      font-family: var(--serif-display);
+      font-size: 1.45rem;
+      line-height: 1.45;
+      font-style: italic;
+      color: var(--ink);
+      max-width: 60ch;
+    }
+
+    p {
+      margin-bottom: 16px;
+      max-width: 62ch;
+    }
+
+    p.body {
+      font-family: var(--serif-body);
+      font-size: 1.02rem;
+      line-height: 1.65;
+      color: var(--ink-2);
+    }
+
+    p.body:first-letter {
+      font-family: var(--serif-display);
+      font-size: 2.6em;
+      float: left;
+      line-height: 0.9;
+      margin: 6px 8px 0 0;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* ---------- Parties block (two columns of legal-style listings) ---------- */
+
+    .parties {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+    }
+    .party {
+      padding: 24px 20px;
+      border-right: 1px solid var(--ink);
+    }
+    .party:last-child { border-right: 0; }
+    .party-role {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 6px;
+    }
+    .party-name {
+      font-family: var(--serif-display);
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--ink);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .party-desc {
+      font-family: var(--serif-body);
+      font-size: 0.95rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 720px) {
+      .parties { grid-template-columns: 1fr; }
+      .party { border-right: 0; border-bottom: 1px solid var(--ink); }
+      .party:last-child { border-bottom: 0; }
+    }
+
+    /* ---------- Dispositions (the four verdicts) ---------- */
+
+    .dispositions {
+      border-top: 2px solid var(--ink);
+    }
+    .disposition {
+      display: grid;
+      grid-template-columns: 200px 1fr 80px;
+      gap: 24px;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--ink);
+      align-items: center;
+    }
+    .disp-tag {
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: 0.88rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      border: 1px solid var(--ink);
+      text-align: center;
+      width: fit-content;
+    }
+    .disp-tag.clear  { color: var(--green-seal); border-color: var(--green-seal); }
+    .disp-tag.watch  { color: var(--indigo);     border-color: var(--indigo); }
+    .disp-tag.flag   { color: var(--stamp);      border-color: var(--stamp); }
+    .disp-tag.recuse {
+      color: var(--paper);
+      background: var(--stamp);
+      border-color: var(--stamp);
+    }
+    .disp-text {
+      font-family: var(--serif-body);
+      font-size: 1.02rem;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .disp-score {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      text-align: right;
+      letter-spacing: 0.06em;
+    }
+
+    @media (max-width: 720px) {
+      .disposition {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .disp-score { text-align: left; }
+    }
+
+    /* ---------- Sample finding (extract from a real ruling) ---------- */
+
+    .finding {
+      border: 1px solid var(--ink);
+      padding: 0;
+      margin-top: 24px;
+    }
+    .finding-head {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 16px 24px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .finding-body {
+      padding: 28px 32px;
+    }
+    .finding-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 24px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed var(--ink-3);
+    }
+    .finding-meta dt {
+      color: var(--ink-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+    }
+    .finding-meta dd { color: var(--ink); word-break: break-all; }
+
+    .finding-ruling {
+      font-family: var(--serif-display);
+      font-style: italic;
+      font-size: 1.3rem;
+      line-height: 1.5;
+      color: var(--ink);
+      padding: 8px 0 16px 24px;
+      border-left: 3px solid var(--stamp);
+      margin-bottom: 20px;
+    }
+
+    .finding-flags {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 32px;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+    }
+    .finding-flags > div {
+      padding: 4px 0;
+      color: var(--stamp);
+    }
+    .finding-flags > div::before { content: "× "; font-weight: 600; }
+
+    .finding-foot {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--ink-3);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--ink-3);
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+    }
+
+    /* ---------- Method (architecture summary) ---------- */
+
+    .method {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      margin-top: 24px;
+    }
+    .method-step {
+      padding: 24px 20px;
+      border-right: 1px solid var(--ink);
+    }
+    .method-step:last-child { border-right: 0; }
+    .method-step .roman {
+      font-family: var(--serif-display);
+      font-style: italic;
+      font-size: 2rem;
+      color: var(--stamp);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .method-step .step-title {
+      font-family: var(--serif-display);
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+    .method-step .step-desc {
+      font-family: var(--serif-body);
+      font-size: 0.95rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 720px) {
+      .method { grid-template-columns: 1fr; }
+      .method-step { border-right: 0; border-bottom: 1px solid var(--ink); }
+      .method-step:last-child { border-bottom: 0; }
+    }
+
+    /* ---------- Code blocks (integration examples) ---------- */
+
+    .code-block {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 24px 28px;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.7;
+      margin: 16px 0;
+      overflow-x: auto;
+      border-left: 3px solid var(--stamp);
+    }
+    .code-block .com { color: var(--ink-3); font-style: italic; }
+    .code-block .kw  { color: #C9A14A; }
+    .code-block .str { color: #9FB57C; }
+    .code-block .fn  { color: var(--stamp-soft); }
+
+    .code-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    /* ---------- Call-to-action (rendered like a court order) ---------- */
+
+    .order {
+      margin: 64px 0 0;
+      padding: 32px;
+      border: 2px solid var(--ink);
+      text-align: center;
+      position: relative;
+    }
+    .order-label {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--paper);
+      padding: 0 16px;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+    }
+    .order-title {
+      font-family: var(--serif-display);
+      font-style: italic;
+      font-size: 2rem;
+      line-height: 1.2;
+      margin: 8px 0 8px;
+      color: var(--ink);
+    }
+    .order-sub {
+      font-family: var(--serif-body);
+      font-size: 1.02rem;
+      color: var(--ink-2);
+      margin-bottom: 24px;
+    }
+    .order-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .order-actions a {
+      display: inline-block;
+      padding: 12px 24px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--ink);
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .order-actions a.primary {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .order-actions a:hover {
+      background: var(--stamp);
+      color: var(--paper);
+      border-color: var(--stamp);
+    }
+
+    /* ---------- Docket footer ---------- */
+
+    .docket-foot {
+      margin-top: 80px;
+      padding-top: 32px;
+      border-top: 2px solid var(--ink);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--ink-3);
+    }
+    .docket-foot a { color: var(--ink); }
+    .docket-foot .col-title {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      margin-bottom: 12px;
+    }
+    .docket-foot ul { list-style: none; line-height: 2; }
+
+    @media (max-width: 720px) {
+      .docket-foot { grid-template-columns: 1fr; }
+    }
+
+    .signature {
+      margin-top: 48px;
+      font-family: var(--serif-display);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--ink-3);
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    /* ---------- Marginalia (decorative notes in margins) ---------- */
+
+    .margin-note {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      color: var(--ink-3);
+      padding: 8px 16px;
+      border-left: 1px solid var(--ink-3);
+      margin: 16px 0 24px 32px;
+      max-width: 48ch;
+    }
+
+    /* ---------- Inline helpers ---------- */
+
+    em.term {
+      font-style: italic;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    code.inline {
+      font-family: var(--mono);
+      font-size: 0.88em;
+      padding: 1px 6px;
+      background: var(--paper-edge);
+      color: var(--ink);
+    }
+  </style>
+</head>
+<body>
+
+  <main class="filing">
+
+    <!-- ==================================================
+         FILING HEADER (Court caption)
+         ================================================== -->
+
+    <div class="court-name">Before the Protocol</div>
+    <div class="court-sub">Genlayer Jurisdiction · Bradbury Testnet</div>
+
+    <div class="caption-bracket">
+      <div class="filed-stamp">
+        FILED
+        <span class="stamp-date">2026 · OPEN BETA</span>
+      </div>
+
+      <div class="docket-line">
+        <span>Case No. RP-2026-0001</span>
+        <span>Court of Public Adjudication</span>
+      </div>
+
+      <h1 class="caption-title">In re:<br/>The Integrity of DeFi Routing</h1>
+      <div class="caption-vs">on the matter of</div>
+      <div class="caption-sub">Every Token Your Contract Touches</div>
+    </div>
+
+    <!-- ==================================================
+         SEAL
+         ================================================== -->
+
+    <div class="seal-block">
+      <svg width="120" height="120" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="Recuse Protocol seal">
+        <rect x="4" y="4" width="56" height="56" fill="none" stroke="#14110F" stroke-width="2"/>
+        <rect x="9" y="9" width="46" height="46" fill="none" stroke="#14110F" stroke-width="1"/>
+        <text x="32" y="42" font-family="Crimson Pro, serif" font-size="32" font-weight="600" font-style="italic" text-anchor="middle" fill="#14110F">R</text>
+        <line x1="0" y1="32" x2="64" y2="32" stroke="#B5252E" stroke-width="3" stroke-linecap="square"/>
+      </svg>
+      <div class="seal-label">
+        Recuse Protocol<br/>
+        <span style="color: var(--stamp);">verdict layer</span><br/>
+        for DeFi integrity
+      </div>
+    </div>
+
+    <!-- ==================================================
+         LEAD / NATURE OF ACTION
+         ================================================== -->
+
+    <section>
+      <div class="section-num">I. Nature of the Action</div>
+      <p class="lead">
+        When a judge has a conflict of interest, they recuse themselves
+        from the case. This protocol gives that capacity to your smart
+        contracts.
+      </p>
+
+      <p class="body" style="margin-top: 24px;">
+        Existing token-safety services are centralized APIs. Every dApp
+        that integrates them trusts a single vendor with the call to
+        block or permit a transaction. Recuse Protocol replaces that
+        trust assumption: live public evidence is written into a
+        GenLayer Intelligent Contract, a deterministic rubric assigns a
+        verdict, and the result becomes reusable on-chain state. The
+        integrating contract consults the verdict and, when the evidence
+        demands it, steps aside.
+      </p>
+
+      <div class="margin-note">
+        Recusal, in law, is not a refusal to act. It is the act of
+        stepping aside so the proceeding may continue under proper
+        authority. Likewise here: the protocol does not block trades.
+        It produces an on-chain finding. The integrating contract
+        decides what to do with it.
+      </div>
+    </section>
+
+    <!-- ==================================================
+         PARTIES
+         ================================================== -->
+
+    <section>
+      <div class="section-num">II. Parties</div>
+      <h2 class="section-title">The actors before the court</h2>
+
+      <div class="parties">
+        <div class="party">
+          <div class="party-role">Petitioner</div>
+          <div class="party-name">The Integrating Contract</div>
+          <div class="party-desc">
+            A DEX router, lending market, vault, or wallet that must
+            decide, in the moment, whether to let a transaction proceed.
+          </div>
+        </div>
+        <div class="party">
+          <div class="party-role">Respondent</div>
+          <div class="party-name">The Token Under Review</div>
+          <div class="party-desc">
+            An ERC-20 contract, named by address and chain, whose
+            integrity is at issue. Newly deployed, established, or
+            anywhere between.
+          </div>
+        </div>
+        <div class="party">
+          <div class="party-role">Adjudicator</div>
+          <div class="party-name">RecuseOracle on Bradbury</div>
+          <div class="party-desc">
+            The deployed Intelligent Contract that receives evidence,
+            applies the rubric, and stores the verdict for later reads.
+          </div>
+        </div>
+        <div class="party">
+          <div class="party-role">Evidence</div>
+          <div class="party-name">Live Public Sources</div>
+          <div class="party-desc">
+            DexScreener and Honeypot.is data fetched at request time,
+            plus token profile links for website, X, and GitHub signals.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         DISPOSITIONS (the four verdicts)
+         ================================================== -->
+
+    <section>
+      <div class="section-num">III. Possible Dispositions</div>
+      <h2 class="section-title">The four findings of this court</h2>
+
+      <p class="body" style="margin-bottom: 24px;">
+        Each verdict is named for what the integrating contract should
+        do upon receipt. The headline gate, <code class="inline">should_recuse()</code>,
+        returns true only for the strictest finding - leaving softer
+        verdicts to the policy of each consumer.
+      </p>
+
+      <div class="dispositions">
+        <div class="disposition">
+          <span class="disp-tag clear">CLEAR</span>
+          <div class="disp-text">Proceed without restriction. Evidence is consistent with a legitimate, established token.</div>
+          <div class="disp-score">0 - 29</div>
+        </div>
+        <div class="disposition">
+          <span class="disp-tag watch">WATCH</span>
+          <div class="disp-text">Proceed but log. Soft warning to the user. Reassess sooner than the default cache interval.</div>
+          <div class="disp-score">30 - 59</div>
+        </div>
+        <div class="disposition">
+          <span class="disp-tag flag">FLAG</span>
+          <div class="disp-text">Hold. Require explicit user override. Surface the full reasoning before allowing the transaction.</div>
+          <div class="disp-score">60 - 79</div>
+        </div>
+        <div class="disposition">
+          <span class="disp-tag recuse">RECUSE</span>
+          <div class="disp-text">Step aside. The transaction shall not proceed under the integrating contract's authority.</div>
+          <div class="disp-score">80 - 100</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         METHOD (architecture, summarized as procedure)
+         ================================================== -->
+
+    <section>
+      <div class="section-num">IV. Method of Fact-Finding</div>
+      <h2 class="section-title">How a verdict is reached</h2>
+
+      <div class="method">
+        <div class="method-step">
+          <div class="roman">I.</div>
+          <div class="step-title">Live snapshot</div>
+          <div class="step-desc">
+            The app fetches current DexScreener and Honeypot.is data
+            through a serverless endpoint with no private key.
+          </div>
+        </div>
+        <div class="method-step">
+          <div class="roman">II.</div>
+          <div class="step-title">Wallet transaction</div>
+          <div class="step-desc">
+            The connected wallet submits <code class="inline">assess_snapshot</code>
+            to RecuseOracle on Bradbury. No backend account writes verdicts.
+          </div>
+        </div>
+        <div class="method-step">
+          <div class="roman">III.</div>
+          <div class="step-title">Stored verdict</div>
+          <div class="step-desc">
+            The contract applies the rubric, persists CLEAR, WATCH,
+            FLAG, or RECUSE, and exposes the result through
+            <code class="inline">get_verdict</code> and
+            <code class="inline">should_recuse</code>.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         SAMPLE FINDING (extract from a real-style ruling)
+         ================================================== -->
+
+    <section>
+      <div class="section-num">V. Sample Finding</div>
+      <h2 class="section-title">Extract from a ruling</h2>
+
+      <div class="finding">
+        <div class="finding-head">
+          <span>Ruling RP-2026-1668</span>
+          <span>Bradbury · Block 14,287,332</span>
+        </div>
+        <div class="finding-body">
+          <dl class="finding-meta">
+            <dt>Respondent Token</dt>
+            <dd>0x87230146E138d3F296a9a77e497A2A83012e9Bc5</dd>
+            <dt>Chain</dt>
+            <dd>BSC</dd>
+            <dt>Symbol of Record</dt>
+            <dd>SQUID</dd>
+            <dt>Disposition</dt>
+            <dd style="color: var(--stamp); font-weight: 600;">RECUSE · score 94/100</dd>
+          </dl>
+
+          <div class="finding-ruling">
+            "The court finds that honeypot simulation confirms holders
+            cannot dispose of this token. Sell tax is 99%, and the
+            contract retains an active owner with an unrestricted
+            setFee function. Liquidity stands at $3,200 against a
+            top-10 holder concentration of 92.4%. The LP is held in
+            no known locker. The project maintains no website, no
+            Twitter presence, no public repository. Recuse."
+          </div>
+
+          <div class="finding-flags">
+            <div>Honeypot - sell transactions reverted</div>
+            <div>Sell tax 99% with unrestricted setFee</div>
+            <div>LP not locked in any known contract</div>
+            <div>Top 10 wallets hold 92.4% of supply</div>
+            <div>No website, no Twitter, no GitHub</div>
+            <div>Pair active 1,668 days; liquidity drained</div>
+          </div>
+
+          <div class="finding-foot">
+            <span>Consensus reached · 5 / 5 validators</span>
+            <span>Finalized in 14 sec</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         INTEGRATION (Filings for Review)
+         ================================================== -->
+
+    <section>
+      <div class="section-num">VI. Filings for Review</div>
+      <h2 class="section-title">How to invoke the court</h2>
+
+      <p class="body">
+        Two integration modes are supported. <em class="term">Pull</em>
+        is synchronous - the integrating contract consults the verdict
+        before allowing a transaction. <em class="term">Push</em> is
+        asynchronous - subscribers receive updated verdicts when a
+        keeper re-runs the assessment.
+      </p>
+
+      <div class="code-label">From another Intelligent Contract (Python)</div>
+      <pre class="code-block"><span class="com"># { "Depends": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6" }</span>
+<span class="kw">from</span> genlayer <span class="kw">import</span> *
+
+RECUSE = Address(<span class="str">"0x..."</span>)  <span class="com"># deployed RecuseOracle</span>
+
+<span class="kw">class</span> <span class="fn">SafeSwap</span>(gl.Contract):
+    @gl.public.write
+    <span class="kw">def</span> <span class="fn">swap_in</span>(self, token: str, chain: str, amount: u256):
+        oracle = gl.get_contract_at(RECUSE)
+        <span class="kw">if</span> oracle.should_recuse(token, chain):
+            <span class="kw">raise</span> gl.vm.UserError(<span class="str">"Recuse: token failed integrity test"</span>)
+        <span class="com"># ... proceed with swap</span></pre>
+
+      <div class="code-label">From a Solidity contract via LayerZero bridge</div>
+      <pre class="code-block"><span class="kw">interface</span> <span class="fn">IRecuse</span> {
+    <span class="kw">function</span> shouldRecuse(<span class="kw">address</span> token, <span class="kw">string calldata</span> chain)
+        <span class="kw">external view returns</span> (<span class="kw">bool</span>);
+}
+
+<span class="kw">contract</span> <span class="fn">GuardedRouter</span> {
+    IRecuse <span class="kw">constant</span> RECUSE = IRecuse(0x...);
+
+    <span class="kw">function</span> swap(<span class="kw">address</span> tokenOut, <span class="kw">uint256</span> amt) <span class="kw">external</span> {
+        <span class="kw">require</span>(!RECUSE.shouldRecuse(tokenOut, <span class="str">"base"</span>), <span class="str">"blocked"</span>);
+        <span class="com">// ... swap logic</span>
+    }
+}</pre>
+    </section>
+
+    <!-- ==================================================
+         ORDER (CTA, styled as a court order)
+         ================================================== -->
+
+    <div class="order">
+      <div class="order-label">Order of the Court</div>
+      <h3 class="order-title">Request the first verdict</h3>
+      <p class="order-sub">
+        Open beta is live on Bradbury testnet. No registration,
+        no API key.
+      </p>
+      <div class="order-actions">
+        <a href="https://app.recuse.xyz" class="primary">Open the application</a>
+        <a href="https://github.com/Zhekinmaksim/recuseprotocol">Read the contract</a>
+      </div>
+    </div>
+
+    <!-- ==================================================
+         DOCKET (footer)
+         ================================================== -->
+
+    <footer class="docket-foot">
+      <div>
+        <div class="col-title">For the Docket</div>
+        <ul>
+          <li><a href="https://github.com/Zhekinmaksim/recuseprotocol">GitHub repository</a></li>
+          <li><a href="https://docs.genlayer.com">GenLayer protocol docs</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="col-title">Of Record</div>
+        <ul>
+          <li>Filed by Zmaxx</li>
+          <li>Submitted to the GenLayer Builder Program</li>
+          <li>MIT License · 2026</li>
+        </ul>
+      </div>
+    </footer>
+
+    <div class="signature">
+      So ordered.
+    </div>
+
+  </main>
+
+</body>
+</html>
