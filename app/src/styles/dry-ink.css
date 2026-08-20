@@ -1,28 +1,28 @@
 /* =====================================================================
-   Recuse Protocol - Graphite Filing design system
-   Judicial contract UI on graphite surfaces. Hard rectangles only.
+   Recuse Protocol - Remotion Filing design system
+   Same paper stage, ink, stamp, and texture as the presentation reel.
    ===================================================================== */
 
 :root {
   /* Surfaces */
-  --paper:        #171614;
-  --paper-2:      #24221F;
-  --paper-3:      #2D2A26;
-  --paper-rule:   #CFC7BA;
+  --paper:        #F2F2EC;
+  --paper-2:      #E5E2D8;
+  --paper-3:      #D7D1C8;
+  --paper-rule:   #14110F;
 
   /* Ink */
-  --ink:          #F3EEE5;
-  --ink-2:        #D7CEC1;
-  --ink-3:        #9B9287;
-  --ink-paper:    #171614;
+  --ink:          #14110F;
+  --ink-2:        #3A332D;
+  --ink-3:        #8A8580;
+  --ink-paper:    #F2F2EC;
 
   /* Accent - used only for the recusal strike and the RECUSE badge */
-  --rust:         #D85B38;
-  --rust-tint:    #5B2B22;
-  --amber:        #D6A14A;
-  --amber-tint:   #4C3920;
-  --moss:         #A9B96B;
-  --moss-tint:    #303B22;
+  --rust:         #B5252E;
+  --rust-tint:    #C8615B;
+  --amber:        #C9A14A;
+  --amber-tint:   #E7D6A5;
+  --moss:         #2E4F2A;
+  --moss-tint:    #C9D6BE;
 
   /* Verdict buckets */
   --bucket-clear:    var(--moss);
@@ -31,12 +31,12 @@
   --bucket-recuse:   var(--rust);
 
   /* Typography */
-  --serif:  "Newsreader", "Iowan Old Style", Georgia, serif;
-  --mono:   "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+  --serif:  "Crimson Pro", "ITC Charter", Times, serif;
+  --mono:   "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
 
   /* Geometry */
   --rule-w: 1px;
-  --rule:   var(--rule-w) solid color-mix(in srgb, var(--paper-rule) 42%, transparent);
+  --rule:   var(--rule-w) solid var(--paper-rule);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,9 +53,9 @@ html, body {
 body {
   overflow-x: hidden;
   background-image:
-    radial-gradient(at 18% 12%, rgb(255 255 255 / 0.055) 0, transparent 34%),
-    radial-gradient(at 82% 78%, rgb(216 91 56 / 0.06) 0, transparent 38%),
-    repeating-linear-gradient(0deg, transparent 0 2px, rgb(255 255 255 / 0.018) 2px 3px);
+    radial-gradient(at 20% 30%, rgba(20,17,15,0.03) 0%, transparent 55%),
+    radial-gradient(at 80% 70%, rgba(20,17,15,0.02) 0%, transparent 55%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(20,17,15,0.012) 3px 4px);
 }
 
 a {
@@ -166,7 +166,7 @@ input[type="text"]:focus { outline: 2px solid var(--ink); outline-offset: -2px; 
   font-family: var(--mono);
   font-size: 0.75rem;
   color: var(--ink-2);
-  background: rgb(255 255 255 / 0.035);
+  background: rgba(20, 17, 15, 0.035);
   white-space: nowrap;
 }
 .wallet-button {
@@ -299,7 +299,7 @@ main { padding: 48px 0 96px; }
 .bucket-tag.clear  { color: var(--bucket-clear); border-color: var(--bucket-clear); }
 .bucket-tag.watch  { color: var(--bucket-watch); border-color: var(--bucket-watch); }
 .bucket-tag.flag   { color: var(--bucket-flag);  border-color: var(--bucket-flag); }
-.bucket-tag.recuse { color: var(--ink-paper); background: var(--bucket-recuse); border-color: var(--bucket-recuse); }
+.bucket-tag.recuse { color: var(--paper); background: var(--bucket-recuse); border-color: var(--bucket-recuse); }
 
 .report-grid {
   display: grid;
