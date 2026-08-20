@@ -8,6 +8,10 @@ on:
 jobs:
   tick:
     runs-on: ubuntu-latest
+    env:
+      GENLAYER_RPC: ${{ secrets.GENLAYER_RPC || 'https://rpc-bradbury.genlayer.com' }}
+      ORACLE_ADDRESS: ${{ secrets.ORACLE_ADDRESS || '0xcFAFCd13B843bcA830b90B678D6bAA75335D6A5f' }}
+      KEEPER_PRIVATE_KEY: ${{ secrets.KEEPER_PRIVATE_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -15,9 +19,15 @@ jobs:
           node-version: "20"
       - run: npm install
         working-directory: keeper
+      - name: Check keeper configuration
+        id: keeper-config
+        run: |
+          if [ -z "$KEEPER_PRIVATE_KEY" ]; then
+            echo "::notice::Skipping keeper: KEEPER_PRIVATE_KEY GitHub secret is not configured."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
       - run: npm run tick
+        if: steps.keeper-config.outputs.enabled == 'true'
         working-directory: keeper
-        env:
-          GENLAYER_RPC: ${{ secrets.GENLAYER_RPC }}
-          ORACLE_ADDRESS: ${{ secrets.ORACLE_ADDRESS }}
-          KEEPER_PRIVATE_KEY: ${{ secrets.KEEPER_PRIVATE_KEY }}
