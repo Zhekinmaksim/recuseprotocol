@@ -1,17 +1,30 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { listSubscriptions, gl } from "../lib/genlayer";
+import { getConnectedWallet, listSubscriptions } from "../lib/genlayer";
 
 const subs = ref<any[]>([]);
 const error = ref("");
 const loading = ref(true);
+const walletRequired = ref(false);
+
+function readableError(e: any) {
+  const message = e?.message || String(e);
+  if (/genvm|VMResult|execution failed|Traceback/i.test(message)) {
+    return "Watchlist is unavailable for this account right now. Verdict pages and token checks are still available.";
+  }
+  return message;
+}
 
 onMounted(async () => {
   try {
-    const me = (gl as any).account?.address || "0x0000000000000000000000000000000000000000";
-    subs.value = (await listSubscriptions(me as `0x${string}`)) as any[];
+    const me = await getConnectedWallet();
+    if (!me) {
+      walletRequired.value = true;
+      return;
+    }
+    subs.value = (await listSubscriptions(me)) as any[];
   } catch (e: any) {
-    error.value = e?.message || String(e);
+    error.value = readableError(e);
   } finally {
     loading.value = false;
   }
@@ -27,6 +40,9 @@ onMounted(async () => {
   </p>
 
   <div v-if="loading" class="notice"><span class="loader">Loading</span></div>
+  <div v-else-if="walletRequired" class="notice">
+    Connect a wallet to view watched tokens.
+  </div>
   <div v-else-if="error" class="notice error">{{ error }}</div>
   <div v-else-if="subs.length === 0" class="notice">
     No tokens watched yet. Start with a check.
