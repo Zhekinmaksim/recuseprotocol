@@ -49,6 +49,10 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 a {
   color: var(--ink);
   text-decoration: underline;
@@ -223,6 +227,23 @@ main { padding: 48px 0 96px; }
 .search-block select { font-family: var(--mono); font-size: 0.9rem; }
 .search-block button { background: var(--ink); color: var(--paper); }
 
+@media (max-width: 760px) {
+  .search-block {
+    grid-template-columns: 1fr;
+  }
+  .search-block > * {
+    min-width: 0;
+    border-right: 0;
+    border-bottom: var(--rule);
+  }
+  .search-block > *:last-child {
+    border-bottom: 0;
+  }
+  .search-block button {
+    width: 100%;
+  }
+}
+
 /* ------- Report layout ------- */
 
 .report-head {
@@ -233,6 +254,10 @@ main { padding: 48px 0 96px; }
   border-bottom: var(--rule);
   padding-bottom: 16px;
   margin-bottom: 32px;
+}
+.report-head > *,
+.report-grid > * {
+  min-width: 0;
 }
 .report-head .title { font-size: 2.4rem; line-height: 1.1; font-weight: 500; }
 .report-head .subtitle {
@@ -275,10 +300,24 @@ main { padding: 48px 0 96px; }
   grid-template-columns: 1fr 1.4fr;
   gap: 48px;
 }
-@media (max-width: 800px) { .report-grid { grid-template-columns: 1fr; } }
+@media (max-width: 800px) {
+  .report-head {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .report-head > div:last-child {
+    text-align: left !important;
+  }
+  .report-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+}
 
 .facts {
   border-top: var(--rule);
+  min-width: 0;
+  width: 100%;
 }
 .facts dt {
   font-family: var(--mono);
@@ -293,6 +332,7 @@ main { padding: 48px 0 96px; }
   font-size: 0.95rem;
   padding: 0 0 14px;
   border-bottom: var(--rule);
+  overflow-wrap: anywhere;
 }
 .facts dd.flag-red   { color: var(--rust); }
 .facts dd.flag-green { color: var(--moss); }
@@ -303,6 +343,7 @@ main { padding: 48px 0 96px; }
   line-height: 1.55;
   border-left: 2px solid var(--ink);
   padding: 4px 0 4px 24px;
+  overflow-wrap: anywhere;
 }
 .reasoning + .flags { margin-top: 32px; }
 
@@ -320,6 +361,7 @@ main { padding: 48px 0 96px; }
   font-size: 0.9rem;
   padding: 6px 0;
   border-bottom: 1px dotted var(--ink-3);
+  overflow-wrap: anywhere;
 }
 .flags li.red::before   { content: "× "; color: var(--rust); }
 .flags li.green::before { content: "✓ "; color: var(--moss); }
