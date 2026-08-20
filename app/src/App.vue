@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { connectWallet, getConnectedWallet } from "./lib/genlayer";
+import { connectWallet, getConnectedWallet, getEthereumProvider } from "./lib/genlayer";
 
 const route = useRoute();
 const today = new Date().toISOString().slice(0, 10);
@@ -36,11 +36,11 @@ function onAccountsChanged(accounts: string[]) {
 
 onMounted(async () => {
   await refreshWallet();
-  window.ethereum?.on?.("accountsChanged", onAccountsChanged);
+  getEthereumProvider()?.on?.("accountsChanged", onAccountsChanged);
 });
 
 onUnmounted(() => {
-  window.ethereum?.removeListener?.("accountsChanged", onAccountsChanged);
+  getEthereumProvider()?.removeListener?.("accountsChanged", onAccountsChanged);
 });
 </script>
 

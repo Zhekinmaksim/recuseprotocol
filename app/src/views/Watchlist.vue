@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { getConnectedWallet, listSubscriptions } from "../lib/genlayer";
+import {
+  getConnectedWallet,
+  listSubscriptions,
+  mergeSubscriptions,
+  rememberedSubscriptions,
+} from "../lib/genlayer";
 
 const subs = ref<any[]>([]);
 const error = ref("");
@@ -22,7 +27,9 @@ onMounted(async () => {
       walletRequired.value = true;
       return;
     }
-    subs.value = (await listSubscriptions(me)) as any[];
+    const cached = rememberedSubscriptions(me);
+    const onchain = (await listSubscriptions(me)) as any[];
+    subs.value = mergeSubscriptions(onchain, cached);
   } catch (e: any) {
     error.value = readableError(e);
   } finally {

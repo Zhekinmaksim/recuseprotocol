@@ -3,8 +3,8 @@
 ## Contract
 
 **Chain:** Bradbury Testnet
-**Address:** `0xf7149EB915b7D0F0AD5068a73b5d05197F66f884`
-**Deploy tx:** `0xbf47ad996f5766cb7b3fe105c92e25948ff05c61dad8870db7ecf1a6db7471b7`
+**Address:** `0xcFAFCd13B843bcA830b90B678D6bAA75335D6A5f`
+**Deploy tx:** `0xcee1dae2284a2eb8eecac8cfc8aff94967bb4bdf7fb3f1ff0e22d4a6a09f7aca`
 **RPC:** `https://rpc-bradbury.genlayer.com`
 
 ### Failed deploy audit trail

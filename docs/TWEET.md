@@ -43,7 +43,7 @@ Best image asset: screenshot of the Verdict page for SQUID (the RECUSE badge is 
 
 > Landing:  recuse.xyz
 > App:      app.recuse.xyz
-> Contract: 0xf7149EB915b7D0F0AD5068a73b5d05197F66f884
+> Contract: 0xcFAFCd13B843bcA830b90B678D6bAA75335D6A5f
 > Code:     github.com/Zhekinmaksim/recuseprotocol
 >
 > Built for the @GenLayer_ Builder Program.

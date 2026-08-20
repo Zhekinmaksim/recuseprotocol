@@ -12,6 +12,11 @@ async function json(url: string) {
   return await res.json();
 }
 
+function intNumber(value: unknown) {
+  const n = Number(value || 0);
+  return Number.isFinite(n) ? Math.max(0, Math.round(n)) : 0;
+}
+
 function buildSnapshot(dexs: any, hpot: any, chain: string) {
   const pairs = (dexs.pairs || []).filter((pair: any) => pair.chainId === chain);
   const bestPair = pairs.sort(
@@ -31,15 +36,15 @@ function buildSnapshot(dexs: any, hpot: any, chain: string) {
     owner_active_7d: null,
     lp_locked: null,
     lp_lock_days_left: null,
-    liquidity_usd: Number(bestPair?.liquidity?.usd || hpot?.pair?.liquidity || 0),
-    market_cap_usd: Number(bestPair.marketCap || bestPair.fdv || 0),
-    holder_count: Number(hpot?.token?.totalHolders || 0),
+    liquidity_usd: intNumber(bestPair?.liquidity?.usd || hpot?.pair?.liquidity),
+    market_cap_usd: intNumber(bestPair.marketCap || bestPair.fdv),
+    holder_count: intNumber(hpot?.token?.totalHolders),
     top10_pct: 0,
     pair_age_days: bestPair.pairCreatedAt || hpot?.pair?.createdAtTimestamp ? 999 : 0,
     contract_age_days: bestPair.pairCreatedAt || hpot?.pair?.createdAtTimestamp ? 999 : 0,
     honeypot_can_sell: Boolean(hpot.simulationSuccess) && !Boolean(hpot?.honeypotResult?.isHoneypot),
-    buy_tax_pct: Number(simulation.buyTax || 0),
-    sell_tax_pct: Number(simulation.sellTax || 0),
+    buy_tax_pct: intNumber(simulation.buyTax),
+    sell_tax_pct: intNumber(simulation.sellTax),
     has_mint_function: null,
     has_blacklist: null,
     has_unrestricted_setfee: null,
@@ -47,7 +52,7 @@ function buildSnapshot(dexs: any, hpot: any, chain: string) {
     twitter_handle: twitter?.url?.replace(/\/$/, "").split("/").pop() || null,
     github_org: github?.url?.replace(/\/$/, "").split("/").pop() || null,
     source: "dexscreener_api+honeypot_api",
-    risk_level: Number(summary.riskLevel || 0),
+    risk_level: intNumber(summary.riskLevel),
     risk: summary.risk || "unknown",
     risk_flags: (summary.flags || hpot.flags || []).map((flag: any) => flag.flag || ""),
   };

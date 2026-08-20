@@ -7,7 +7,7 @@ When a judge has a conflict of interest, they recuse themselves from the case. R
 ## Production Status
 
 - **Network:** GenLayer Bradbury Testnet
-- **Contract:** `0xf7149EB915b7D0F0AD5068a73b5d05197F66f884`
+- **Contract:** `0xcFAFCd13B843bcA830b90B678D6bAA75335D6A5f`
 - **Deploy tx:** `0xbf47ad996f5766cb7b3fe105c92e25948ff05c61dad8870db7ecf1a6db7471b7`
 - **Verified smoke checks:**
   - USDC on Ethereum: `CLEAR`, score `12`, tx `0xc85a99aee2aefa465b9bf1ad84fc557073dca63367b5d67002a30eadae64d1f5`
@@ -106,7 +106,7 @@ npm run dev
 The public frontend variables are:
 
 ```bash
-VITE_ORACLE_ADDRESS=0xf7149EB915b7D0F0AD5068a73b5d05197F66f884
+VITE_ORACLE_ADDRESS=0xcFAFCd13B843bcA830b90B678D6bAA75335D6A5f
 VITE_GENLAYER_RPC=https://rpc-bradbury.genlayer.com
 ```
 
@@ -141,8 +141,8 @@ cd app && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution 
 Bradbury checks:
 
 ```bash
-genlayer call 0xf7149EB915b7D0F0AD5068a73b5d05197F66f884 get_verdict --args 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 ethereum
-genlayer call 0xf7149EB915b7D0F0AD5068a73b5d05197F66f884 get_verdict --args 0x87230146E138d3F296a9a77e497A2A83012e9Bc5 bsc
+genlayer call 0xcFAFCd13B843bcA830b90B678D6bAA75335D6A5f get_verdict --args 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 ethereum
+genlayer call 0xcFAFCd13B843bcA830b90B678D6bAA75335D6A5f get_verdict --args 0x87230146E138d3F296a9a77e497A2A83012e9Bc5 bsc
 ```
 
 Expected results are `clear` score `12` for USDC and `recuse` score `90` for SQUID.

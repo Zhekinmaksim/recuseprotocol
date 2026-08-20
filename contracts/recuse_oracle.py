@@ -399,7 +399,7 @@ class RecuseOracle(gl.Contract):
 
     @gl.public.view
     def list_subscriptions(self, who: Address) -> DynArray[Subscription]:
-        out: DynArray[Subscription] = DynArray[Subscription]()
+        out = []
         for s in self.subscriptions:
             if s.subscriber == who:
                 out.append(s)

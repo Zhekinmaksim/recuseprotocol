@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { getVerdict, subscribe, type Verdict, type OnchainSignals, type OffchainSignals } from "../lib/genlayer";
+import {
+  getConnectedWallet,
+  getVerdict,
+  rememberSubscription,
+  subscribe,
+  type Verdict,
+  type OnchainSignals,
+  type OffchainSignals,
+} from "../lib/genlayer";
 
 const props = defineProps<{ chain: string; token: string }>();
 
@@ -41,6 +49,16 @@ onMounted(async () => {
 async function watch() {
   try {
     await subscribe(props.token, props.chain);
+    const subscriber = await getConnectedWallet();
+    if (subscriber) {
+      rememberSubscription({
+        subscriber,
+        token: props.token,
+        chain: props.chain,
+        last_bucket: verdict.value?.bucket || "unknown",
+        last_checked: Number(verdict.value?.checked_at || 0),
+      });
+    }
     subscribed.value = true;
   } catch (e: any) {
     error.value = e?.message || String(e);

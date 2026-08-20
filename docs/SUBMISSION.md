@@ -18,7 +18,7 @@
 ## Contract
 
 - **Network:** Bradbury Testnet
-- **Address:** `0xf7149EB915b7D0F0AD5068a73b5d05197F66f884`
+- **Address:** `0xcFAFCd13B843bcA830b90B678D6bAA75335D6A5f`
 - **Deploy tx:** `0xbf47ad996f5766cb7b3fe105c92e25948ff05c61dad8870db7ecf1a6db7471b7`
 
 ## Calibration Transactions
@@ -56,7 +56,7 @@ vercel --prod
 Required Vercel environment variables:
 
 ```bash
-VITE_ORACLE_ADDRESS=0xf7149EB915b7D0F0AD5068a73b5d05197F66f884
+VITE_ORACLE_ADDRESS=0xcFAFCd13B843bcA830b90B678D6bAA75335D6A5f
 VITE_GENLAYER_RPC=https://rpc-bradbury.genlayer.com
 ```
 

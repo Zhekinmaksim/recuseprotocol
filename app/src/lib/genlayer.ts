@@ -4,7 +4,7 @@ import { TransactionStatus } from "genlayer-js/types";
 import type { Address, TransactionHash } from "genlayer-js/types";
 
 const rpc = import.meta.env.VITE_GENLAYER_RPC || "https://rpc-bradbury.genlayer.com";
-const oracleAddress = import.meta.env.VITE_ORACLE_ADDRESS || "0xf7149EB915b7D0F0AD5068a73b5d05197F66f884";
+const oracleAddress = import.meta.env.VITE_ORACLE_ADDRESS || "0xcFAFCd13B843bcA830b90B678D6bAA75335D6A5f";
 
 export const gl = createClient({
   chain: testnetBradbury,
@@ -62,16 +62,36 @@ export interface OffchainSignals {
   notes: string;
 }
 
+export interface Subscription {
+  subscriber: string;
+  token: string;
+  chain: string;
+  last_bucket: string;
+  last_checked: number;
+}
+
 type EthereumProvider = {
   request(args: { method: string; params?: unknown[] | Record<string, unknown> }): Promise<any>;
   on?(event: "accountsChanged" | "chainChanged", handler: (...args: any[]) => void): void;
   removeListener?(event: "accountsChanged" | "chainChanged", handler: (...args: any[]) => void): void;
+  providers?: EthereumProvider[];
+  isMetaMask?: boolean;
 };
 
 declare global {
   interface Window {
     ethereum?: EthereumProvider;
   }
+}
+
+export function getEthereumProvider(): EthereumProvider | undefined {
+  const provider = window.ethereum;
+  return (
+    provider?.providers?.find(candidate => candidate.isMetaMask) ||
+    (provider?.isMetaMask ? provider : undefined) ||
+    provider?.providers?.[0] ||
+    provider
+  );
 }
 
 async function switchToBradbury(provider: EthereumProvider) {
@@ -106,12 +126,12 @@ async function walletClient() {
     chain: testnetBradbury,
     endpoint: rpc,
     account,
-    provider: window.ethereum,
+    provider: getEthereumProvider(),
   });
 }
 
 export async function connectWallet(): Promise<Address> {
-  const provider = window.ethereum;
+  const provider = getEthereumProvider();
   if (!provider) {
     throw new Error("MetaMask is required to connect a wallet.");
   }
@@ -125,10 +145,17 @@ export async function connectWallet(): Promise<Address> {
 }
 
 export async function getConnectedWallet(): Promise<Address | null> {
-  const provider = window.ethereum;
+  const provider = getEthereumProvider();
   if (!provider) return null;
-  const accounts = (await provider.request({ method: "eth_accounts" })) as Address[];
-  return accounts[0] ?? null;
+  try {
+    const accounts = (await Promise.race([
+      provider.request({ method: "eth_accounts" }),
+      new Promise<[]>(resolve => window.setTimeout(() => resolve([]), 3000)),
+    ])) as Address[];
+    return accounts[0] ?? null;
+  } catch {
+    return null;
+  }
 }
 
 function oracle(): Address {
@@ -136,6 +163,53 @@ function oracle(): Address {
     throw new Error("Set VITE_ORACLE_ADDRESS to the deployed RecuseOracle address.");
   }
   return ORACLE_ADDRESS as Address;
+}
+
+const watchlistKey = "recuse.watchlist.v1";
+
+function subKey(sub: Pick<Subscription, "subscriber" | "token" | "chain">) {
+  return `${sub.subscriber.toLowerCase()}:${sub.chain}:${sub.token.toLowerCase()}`;
+}
+
+function normalizeSubscription(sub: any): Subscription | null {
+  if (!sub?.subscriber || !sub?.token || !sub?.chain) return null;
+  return {
+    subscriber: String(sub.subscriber),
+    token: String(sub.token),
+    chain: String(sub.chain),
+    last_bucket: String(sub.last_bucket || "unknown"),
+    last_checked: Number(sub.last_checked || 0),
+  };
+}
+
+export function rememberSubscription(sub: Subscription) {
+  const existing = rememberedSubscriptions(sub.subscriber);
+  const merged = new Map(existing.map(item => [subKey(item), item]));
+  merged.set(subKey(sub), sub);
+  window.localStorage.setItem(watchlistKey, JSON.stringify([...merged.values()]));
+}
+
+export function rememberedSubscriptions(who: string): Subscription[] {
+  try {
+    const raw = JSON.parse(window.localStorage.getItem(watchlistKey) || "[]");
+    if (!Array.isArray(raw)) return [];
+    return raw
+      .map(normalizeSubscription)
+      .filter((sub): sub is Subscription => Boolean(sub))
+      .filter(sub => sub.subscriber.toLowerCase() === who.toLowerCase());
+  } catch {
+    return [];
+  }
+}
+
+export function mergeSubscriptions(onchain: any[], cached: Subscription[]) {
+  const merged = new Map<string, Subscription>();
+  for (const sub of cached) merged.set(subKey(sub), sub);
+  for (const raw of onchain) {
+    const sub = normalizeSubscription(raw);
+    if (sub) merged.set(subKey(sub), sub);
+  }
+  return [...merged.values()];
 }
 
 export async function assess(token: string, chain: string) {
@@ -164,6 +238,11 @@ async function json(url: string): Promise<any> {
   return await res.json();
 }
 
+function intNumber(value: unknown) {
+  const n = Number(value || 0);
+  return Number.isFinite(n) ? Math.max(0, Math.round(n)) : 0;
+}
+
 function buildSnapshot(dexs: any, hpot: any, chain: string) {
   const pairs = (dexs.pairs || []).filter((pair: any) => pair.chainId === chain);
   const bestPair = pairs.sort(
@@ -183,15 +262,15 @@ function buildSnapshot(dexs: any, hpot: any, chain: string) {
     owner_active_7d: null,
     lp_locked: null,
     lp_lock_days_left: null,
-    liquidity_usd: Number(bestPair?.liquidity?.usd || hpot?.pair?.liquidity || 0),
-    market_cap_usd: Number(bestPair.marketCap || bestPair.fdv || 0),
-    holder_count: Number(hpot?.token?.totalHolders || 0),
+    liquidity_usd: intNumber(bestPair?.liquidity?.usd || hpot?.pair?.liquidity),
+    market_cap_usd: intNumber(bestPair.marketCap || bestPair.fdv),
+    holder_count: intNumber(hpot?.token?.totalHolders),
     top10_pct: 0,
     pair_age_days: bestPair.pairCreatedAt || hpot?.pair?.createdAtTimestamp ? 999 : 0,
     contract_age_days: bestPair.pairCreatedAt || hpot?.pair?.createdAtTimestamp ? 999 : 0,
     honeypot_can_sell: Boolean(hpot.simulationSuccess) && !Boolean(hpot?.honeypotResult?.isHoneypot),
-    buy_tax_pct: Number(simulation.buyTax || 0),
-    sell_tax_pct: Number(simulation.sellTax || 0),
+    buy_tax_pct: intNumber(simulation.buyTax),
+    sell_tax_pct: intNumber(simulation.sellTax),
     has_mint_function: null,
     has_blacklist: null,
     has_unrestricted_setfee: null,
@@ -199,7 +278,7 @@ function buildSnapshot(dexs: any, hpot: any, chain: string) {
     twitter_handle: twitter?.url?.replace(/\/$/, "").split("/").pop() || null,
     github_org: github?.url?.replace(/\/$/, "").split("/").pop() || null,
     source: "dexscreener_api+honeypot_api",
-    risk_level: Number(summary.riskLevel || 0),
+    risk_level: intNumber(summary.riskLevel),
     risk: summary.risk || "unknown",
     risk_flags: (summary.flags || hpot.flags || []).map((flag: any) => flag.flag || ""),
   };
@@ -292,9 +371,18 @@ export async function subscribe(token: string, chain: string) {
 }
 
 export async function listSubscriptions(who: `0x${string}`) {
-  return await gl.readContract({
+  const client = window.ethereum ? await walletClient() : gl;
+  const result = await client.readContract({
     address: oracle(),
     functionName: "list_subscriptions",
-    args: [who],
+    args: [who.toLowerCase()],
   });
+  if (Array.isArray(result)) return result.map(normalizeSubscription).filter(Boolean);
+  if (Array.isArray((result as any)?.result)) {
+    return (result as any).result.map(normalizeSubscription).filter(Boolean);
+  }
+  if (Array.isArray((result as any)?.data)) {
+    return (result as any).data.map(normalizeSubscription).filter(Boolean);
+  }
+  return [];
 }
