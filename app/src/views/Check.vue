@@ -1,15 +1,36 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { assessSnapshot, getVerdict } from "../lib/genlayer";
 
 const token = ref("");
 const chain = ref("ethereum");
+const chainMenuOpen = ref(false);
+const chainSelectEl = ref<HTMLElement | null>(null);
 const status = ref<"idle" | "loading" | "error">("idle");
 const error = ref("");
 const router = useRouter();
 
 const CHAINS = ["ethereum", "base", "arbitrum", "polygon", "bsc", "optimism"];
+
+function selectChain(nextChain: string) {
+  chain.value = nextChain;
+  chainMenuOpen.value = false;
+}
+
+function onDocumentPointerDown(event: PointerEvent) {
+  if (!chainSelectEl.value?.contains(event.target as Node)) {
+    chainMenuOpen.value = false;
+  }
+}
+
+onMounted(() => {
+  document.addEventListener("pointerdown", onDocumentPointerDown);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("pointerdown", onDocumentPointerDown);
+});
 
 async function run() {
   error.value = "";
@@ -50,9 +71,36 @@ async function run() {
         placeholder="0x… ERC-20 contract address"
         @keyup.enter="run"
       />
-      <select v-model="chain">
-        <option v-for="c in CHAINS" :key="c" :value="c">{{ c }}</option>
-      </select>
+      <div
+        ref="chainSelectEl"
+        class="chain-select"
+        @keydown.escape.prevent="chainMenuOpen = false"
+      >
+        <button
+          class="chain-select-button"
+          type="button"
+          :aria-expanded="chainMenuOpen"
+          aria-haspopup="listbox"
+          @mousedown.prevent
+          @click="chainMenuOpen = !chainMenuOpen"
+        >
+          <span>{{ chain }}</span>
+        </button>
+        <div v-if="chainMenuOpen" class="chain-menu" role="listbox">
+          <button
+            v-for="c in CHAINS"
+            :key="c"
+            class="chain-option"
+            type="button"
+            role="option"
+            :aria-selected="chain === c"
+            @mousedown.prevent
+            @click="selectChain(c)"
+          >
+            {{ c }}
+          </button>
+        </div>
+      </div>
       <button @click="run" :disabled="status === 'loading'">
         <span v-if="status !== 'loading'">Request verdict</span>
         <span v-else class="loader">Reaching consensus</span>
