@@ -42,7 +42,7 @@ onMounted(async () => {
   <h1 style="font-family: var(--serif); font-weight: 500; font-size: 2.2rem; margin-bottom: 24px;">Watchlist</h1>
   <p style="color: var(--ink-3); margin-bottom: 32px; max-width: 56ch;">
     A keeper calls <code style="font-family: var(--mono);">tick()</code> every 6 hours.
-    When a verdict bucket shifts (CLEAR → FLAG, FLAG → RECUSE), the new state is
+    When a verdict bucket shifts from CLEAR to FLAG, or FLAG to RECUSE, the new state is
     written on-chain and visible here.
   </p>
 
@@ -71,7 +71,7 @@ onMounted(async () => {
         <td>
           <span class="bucket-tag" :class="s.last_bucket" style="font-size: 0.72rem; padding: 4px 8px;">{{ s.last_bucket }}</span>
         </td>
-        <td>{{ s.last_checked || "—" }}</td>
+        <td>{{ s.last_checked || "-" }}</td>
       </tr>
     </tbody>
   </table>

@@ -9,3 +9,4 @@ __pycache__/
 .vite/
 .vercel/
 .playwright-cli/
+output/
